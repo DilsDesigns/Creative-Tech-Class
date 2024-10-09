@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <script>
+        let canvas = document.getElementById('myCanvas');
+        let context = canvas.getContext('2d', { willReadFrequently: true });
+
+        // Load the BMP font image
+        let bmpImage = new Image();
+        bmpImage.src = 'FuturaHeavyfont.bmp';  // Ensure the correct path
+
+        bmpImage.onload = function() {
+            console.log('BMP image loaded successfully');
+
+            // Try to draw the BMP on the canvas and get its image data
+            try {
+                context.drawImage(bmpImage, 0, 0);
+                console.log('BMP image drawn on the canvas');
+                let imgData = context.getImageData(0, 0, bmpImage.width, bmpImage.height);
+                console.log('Image data captured:', imgData);
+                // Now proceed with your font map generation or next steps
+                generateFontMap(imgData);  // If you're using this to generate text
+            } catch (e) {
+                console.error('Error accessing image data:', e);
+            }
+        };
+
+        bmpImage.onerror = function() {
+            console.error('Failed to load BMP image. Check file path or permissions.');
+        };
+
+        function generateFontMap(imgData) {
+            console.log("Generating font map...");
+            // You can proceed with mapping font data here using the imgData
+            // Example of your existing logic for creating colorful blocks
+        }
+
+        // Example of your previous logic for the colorful blocks and text animation
+
+        function drawColorfulBlocks() {
+            let blockSize = 50;  // Block size
+
+            context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before drawing
+
+            // Loop through the canvas and create blocks
+            for (let y = 0; y < canvas.height; y += blockSize) {
+                for (let x = 0; x < canvas.width; x += blockSize) {
+                    let randomColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                    context.fillStyle = randomColor;
+                    context.fillRect(x, y, blockSize, blockSize); // Draw block
+                }
+            }
+        }
+
+        // Function to animate text using colorful blocks
+        function drawTextWithColorfulBlocks() {
+            let text = 'Hello!';  // Example text
+            let blockSize = 20;  // Smaller block size for text
+
+            context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before drawing text
+
+            context.font = 'bold 100px Arial';  // Set font size and style
+            context.fillStyle = 'white';  // Set the background color for the text
+            context.fillRect(100, 200, 600, 200);  // Background for the text
+            context.fillStyle = 'black';
+            context.fillText(text, 120, 300);  // Draw text
+
+            // Loop through the canvas and fill the text with colorful blocks
+            for (let y = 200; y < 400; y += blockSize) {
+                for (let x = 100; x < 700; x += blockSize) {
+                    if (context.isPointInPath(context.font, x, y)) {
+                        let randomColor = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+                        context.fillStyle = randomColor;
+                        context.fillRect(x, y, blockSize, blockSize); // Draw block inside the text
+                    }
+                }
+            }
+        }
+
+        // Initial function to start the animation or drawing
+        function init() {
+            drawColorfulBlocks();  // Draw colorful blocks first
+            setTimeout(drawTextWithColorfulBlocks, 2000);  // After 2 seconds, draw the text
+        }
+
+        init();  // Start the animation
+
+    </script>
+</body>
+</html>

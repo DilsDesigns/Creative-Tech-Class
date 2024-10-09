@@ -1,0 +1,96 @@
+<html>
+<body>
+	<canvas width="600" height="600"></canvas>
+
+	<script>
+		let canvas = document.querySelector('canvas');
+		let context = canvas.getContext('2d');
+
+		// Define the primary colors array with HEX codes
+		const colors = ['#FF0000', '#FFFF00', '#0000FF']; // Red, Yellow, Blue
+
+		// Function to get a random color from the primary colors
+		function getRandomColor() {
+			return colors[Math.floor(Math.random() * colors.length)];
+		}
+
+		// Function to ensure that we don't get all three colors the same
+		function getThreeDifferentColors() {
+			let outerStrokeColor = getRandomColor();
+			let innerStrokeColor = getRandomColor();
+			let fillColor = getRandomColor();
+
+			// Keep picking new colors if all three are the same
+			while (outerStrokeColor === innerStrokeColor && innerStrokeColor === fillColor) {
+				outerStrokeColor = getRandomColor();
+				innerStrokeColor = getRandomColor();
+				fillColor = getRandomColor();
+			}
+
+			return { outerStrokeColor, innerStrokeColor, fillColor };
+		}
+
+		let lastTime = 0;
+		let delay = 1000; // Delay in milliseconds (1000ms = 1 second)
+
+		// The main function that runs the animation loop
+		function animate(currentTime) {
+			if (currentTime - lastTime > delay) {
+				// Clear the canvas before each new frame
+				context.clearRect(0, 0, canvas.width, canvas.height);
+
+				// Loop to draw the grid of rectangles
+				for (let i = 0; i < 5; i++) {
+					for (let j = 0; j < 5; j++) {
+						let width = 60;
+						let height = 60;
+						let gap = 20;
+						let x = 100 + (width + gap) * i;
+						let y = 100 + (height + gap) * j;
+
+						// Get random colors that are not all the same
+						let { outerStrokeColor, innerStrokeColor, fillColor } = getThreeDifferentColors();
+
+						// Set stroke color for the outer square
+						context.strokeStyle = outerStrokeColor;
+
+						// Make the outer stroke thicker and adjust size to avoid the white gap
+						context.lineWidth = 8;  // Thicker stroke for the outer square
+						
+						// Draw the outer rectangle (adjust size slightly to remove gap)
+						context.beginPath();
+						context.rect(x + 1, y + 1, width - 2, height - 2);  // Adjusted size
+						context.stroke();  // Draw the outline (stroke only)
+
+						// Randomly draw a smaller inner rectangle with fill and stroke
+						if (Math.random() > 0.5) {
+							// Set random colors for inner square
+							context.fillStyle = fillColor; // Random fill color
+							context.strokeStyle = innerStrokeColor; // Random stroke color
+
+							// Make the inner stroke thinner (optional) and adjust size
+							context.lineWidth = 4;  // Thinner stroke for the inner square
+
+							// Draw the smaller inner rectangle (adjust size and position)
+							context.beginPath();
+							context.rect(x + 6, y + 6, width - 12, height - 12);  // Adjusted size and position
+							context.stroke();  // Draw the outline (stroke)
+							context.fill();    // Fill the inner rectangle with color
+						}
+					}
+				}
+
+				// Update the last time the frame was drawn
+				lastTime = currentTime;
+			}
+
+			// Loop the animation using requestAnimationFrame
+			requestAnimationFrame(animate);
+		}
+
+		// Start the animation loop
+		requestAnimationFrame(animate);
+
+	</script>
+</body>
+</html>
